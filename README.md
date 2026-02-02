@@ -1,15 +1,23 @@
-# Claude Code のトークン消費を 95% 削減
+# 3AI協調開発テンプレート
 
-コードレビュー・テスト作成・ドキュメント生成を Codex に自動委譲。
-Claude Code は設計と実装に集中。API課金を大幅カット。
+Claude Code + Codex + Gemini CLI の3つのAIで開発タスクを最適分担。
+コスト削減と効率化を両立。
 
-| タスク | Before | After | 削減 |
-|-------|--------|-------|------|
-| コードレビュー | 53,000 | 2,500 | **-95%** |
-| テスト作成 | 30,000 | 3,000 | **-90%** |
-| ドキュメント | 20,000 | 2,000 | **-90%** |
+| AI | 担当 | 強み |
+|----|------|------|
+| **Claude Code** | 設計・実装 | 最高の推論能力 |
+| **Codex** | テスト・レビュー | 高速・自動化 |
+| **Gemini** | 解析・リサーチ | 1Mトークン・無料枠 |
 
-> Claude = 設計・実装 / Codex = テスト・レビュー・ドキュメント
+---
+
+## コスト効果
+
+| タスク | Claude単独 | 3AI分担 | 削減 |
+|-------|-----------|---------|------|
+| 機能追加 | 80,000 | 15,000 | **-81%** |
+| リファクタ | 50,000 | 0 | **-100%** (Gemini無料) |
+| リサーチ | 30,000 | 0 | **-100%** (Gemini無料) |
 
 ---
 
@@ -19,55 +27,69 @@ Claude Code は設計と実装に集中。API課金を大幅カット。
 curl -fsSL https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install-fullstack.sh | bash -s -- my-app
 ```
 
-インストール後、`claude` を起動するだけ。
+3つのAIツールが未インストールの場合、自動でインストールされます。
 
 ---
 
 ## 使い方
 
-### 機能追加
+### Claude Code（設計・実装）
 
 ```bash
+/feature ユーザー認証    # 機能追加
+/fix ログインエラー      # バグ修正
+/ui ログインフォーム     # UI生成
+/deploy                  # デプロイ
+```
+
+### Codex（テスト・レビュー）
+
+```bash
+/review                  # コードレビュー
+/test src/components/    # テスト生成
+```
+
+### Gemini（解析・リサーチ）
+
+```bash
+/analyze                 # コードベース解析
+/research "Next.js 15"   # 技術リサーチ
+/refactor src/lib/       # リファクタ提案
+```
+
+---
+
+## 分担フロー
+
+```
 /feature ユーザー認証
+
+[設計] → [UI] → [実装] → [テスト] → [レビュー] → [デプロイ]
+Claude   Claude  Claude   Codex     Codex      Claude
 ```
 
 ```
-[設計] → [UI生成] → [実装] → [テスト] → [レビュー] → [デプロイ]
-Claude   Claude    Claude   Codex    Codex     Vercel
-```
+/refactor src/
 
-### バグ修正
-
-```bash
-/fix ログインエラー
-```
-
-### UI生成
-
-```bash
-/ui ログインフォーム
-/page ダッシュボード
-```
-
-### デプロイ
-
-```bash
-/deploy
+[解析] → [提案] → [実装] → [レビュー]
+Gemini   Gemini   Claude   Codex
 ```
 
 ---
 
 ## コマンド一覧
 
-| コマンド | 説明 |
-|---------|------|
-| `/feature <名前>` | 機能追加（設計→実装→テスト→デプロイ） |
-| `/fix <内容>` | バグ修正（調査→修正→レビュー） |
-| `/ui <名前>` | UIコンポーネント生成 |
-| `/page <名前>` | ページ全体のUI生成 |
-| `/deploy` | 本番デプロイ |
-| `/review` | コードレビュー実行 |
-| `/test <path>` | テスト生成 |
+| コマンド | 説明 | 担当AI |
+|---------|------|--------|
+| `/feature <名前>` | 機能追加 | Claude → Codex |
+| `/fix <内容>` | バグ修正 | Claude → Codex |
+| `/ui <名前>` | UI生成 | Claude |
+| `/deploy` | デプロイ | Claude |
+| `/review` | コードレビュー | Codex |
+| `/test <path>` | テスト生成 | Codex |
+| `/analyze` | コード解析 | Gemini |
+| `/research <質問>` | リサーチ | Gemini |
+| `/refactor <path>` | リファクタ提案 | Gemini |
 
 ---
 
@@ -77,19 +99,8 @@ Claude   Claude    Claude   Codex    Codex     Vercel
 - Node.js 18+
 - Claude Code (`npm i -g @anthropic-ai/claude-code`)
 - Codex (`npm i -g @openai/codex`)
+- Gemini CLI (`npm i -g @google/gemini-cli`)
 
 ---
 
-## 計測方法
-
-```bash
-# ユーザー認証機能の実装で計測
-Claude単独: 53,247トークン
-本ツール使用: 2,891トークン（テスト・レビューをCodex委譲）
-```
-
-削減率は実際のプロジェクトで計測した値です。
-
----
-
-MIT License | [最小構成版](https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install.sh) | [Issue](https://github.com/yu010101/claude-codex-collab/issues) | [PR](https://github.com/yu010101/claude-codex-collab/pulls)
+MIT License | [最小構成版](https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install.sh) | [Issue](https://github.com/yu010101/claude-codex-collab/issues)
