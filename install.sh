@@ -50,6 +50,40 @@ cat > CLAUDE.md << 'EOF'
 | レビュー | `./scripts/auto-delegate.sh review` |
 | テスト作成 | `./scripts/auto-delegate.sh test` |
 | ドキュメント | `./scripts/auto-delegate.sh docs` |
+
+## サブエージェント活用ルール（重要）
+
+### 必須: 以下の場合はTaskツールでサブエージェントを起動
+
+1. **コード探索 (Explore)**
+   - トリガー: 「〜はどこ？」「〜を探して」「構造を教えて」
+   - 起動: `Task(subagent_type="Explore", prompt="...")`
+
+2. **計画立案 (Plan)**
+   - トリガー: 「〜を実装したい」「設計して」「計画を立てて」
+   - 起動: `Task(subagent_type="Plan", prompt="...")`
+
+3. **並列調査**
+   - 複数ファイル/機能の調査 → **複数Taskを同時起動**
+
+### 起動例
+
+```
+# 単発調査
+Task(subagent_type="Explore", prompt="認証機能の実装箇所を調査")
+
+# 並列調査（同時に複数起動）
+Task(subagent_type="Explore", prompt="フロントエンドを調査")
+Task(subagent_type="Explore", prompt="バックエンドを調査")
+```
+
+### 判断基準
+
+| 状況 | アクション |
+|------|-----------|
+| 「〜はどこ？」 | `Task(Explore)` |
+| 「〜を実装したい」 | `Task(Plan)` → 計画後に実装 |
+| 複数箇所を同時調査 | 複数の `Task(Explore)` を並列 |
 EOF
 
 # ===== AGENTS.md =====
