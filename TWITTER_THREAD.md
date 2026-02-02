@@ -3,33 +3,34 @@
 ## メインツイート（1/7）
 
 ```
-Claude + Codex + Gemini の3AI連携でSaaSを作ってみた
+Claude Code 単体だと遅いので、Codex と分業させる OSS を作った
 
 結果:
-・実装コスト 75%削減
+・コスト 75%削減
 ・一人開発でも設計書が残る
-・実装フェーズは $0（Codex）
+・AI同士でレビューさせるから安心
 
-/project コマンド1つで、要件定義→設計→実装→テスト→レビューまで自動化
-
-OSSで公開したので使ってみてください👇
+/project コマンド1つで、設計→実装→テスト→レビューまで自動化
 
 https://github.com/AI-Driven-School/claude-codex-collab
 ```
+
+**添付**: promo.gif
 
 ---
 
 ## スレッド（2/7）
 
 ```
-なぜ3AI連携？
+課題:
 
-Claude単体だと全部課金される
-→ 設計・判断だけClaudeに任せる
-→ 実装・テストはCodex（ChatGPT Proに含まれる）
-→ 大規模解析はGemini（無料）
+Claude Code は賢いけど、
+「CRUDのAPI作って」みたいな単純作業でも課金される
 
-それぞれの得意分野で分業させる
+設計判断は Claude が強い
+でも実装は Codex (ChatGPT Pro含む) の方が速い
+
+なら分業させればいい
 ```
 
 ---
@@ -37,18 +38,14 @@ Claude単体だと全部課金される
 ## スレッド（3/7）
 
 ```
-実際に作ったもの: StressAIAgent
+解決策:
 
-AIメンタルヘルスSaaSの「組織分析AI」機能を /project コマンドで実装
+Claude → 設計・判断・レビュー（ここだけ課金）
+Codex → 実装・テスト（$0、ChatGPT Proに含む）
+Gemini → 大規模解析（無料）
 
-生成されたファイル:
-・要件定義書
-・API設計（OpenAPI）
-・画面設計書
-・バックエンドAPI
-・フロントエンド
-・E2Eテスト
-・レビュー文書
+Before: 1機能 $1.00
+After:  1機能 $0.25（75%削減）
 ```
 
 ---
@@ -56,16 +53,19 @@ AIメンタルヘルスSaaSの「組織分析AI」機能を /project コマン�
 ## スレッド（4/7）
 
 ```
-6フェーズのワークフロー:
+ワークフロー:
+
+/project ユーザー認証
 
 [1/6] 要件定義 → Claude
-[2/6] 設計 → Claude
+[2/6] API設計 → Claude
 [3/6] 実装 → Codex ★ $0
 [4/6] テスト → Codex ★ $0
 [5/6] レビュー → Claude
-[6/6] デプロイ → 承認後実行
+[6/6] デプロイ → 承認後
 
-各フェーズで承認/却下ができる
+各フェーズで承認/却下できる
+AIに全部任せるのが怖くても大丈夫
 ```
 
 ---
@@ -73,16 +73,15 @@ AIメンタルヘルスSaaSの「組織分析AI」機能を /project コマン�
 ## スレッド（5/7）
 
 ```
-コスト比較:
+「AIにレビューさせる」が意外と安心
 
-❌ Claude単体で全部やる
-　→ 1機能あたり $1.00
+Codex は速いけど雑な時がある
+→ Claude がレビューして設計書との整合性をチェック
 
-✅ 3AI連携
-　→ 1機能あたり $0.25
-　→ 75%削減
+人間は最終確認だけ
 
-実装とテストをCodexに委譲するだけでこの差
+AI同士で牽制させると、
+1つのAIに全部任せるより信頼できる
 ```
 
 ---
@@ -90,13 +89,21 @@ AIメンタルヘルスSaaSの「組織分析AI」機能を /project コマン�
 ## スレッド（6/7）
 
 ```
-必要なもの:
+実際に作ったもの:
 
-・Claude Code（従量課金）
-・ChatGPT Pro（$200/月、Codex用）
-・Gemini CLI（無料）
+メンタルヘルスSaaSに「組織分析AI」機能を追加
 
-ChatGPT Proに入ってる人は今すぐ使える
+/project 組織分析AI
+
+→ 要件定義
+→ API設計（OpenAPI）
+→ 画面設計
+→ バックエンド実装
+→ フロントエンド実装
+→ E2Eテスト 10ケース
+→ レビュー文書
+
+これが全部自動で生成される
 ```
 
 ---
@@ -106,23 +113,37 @@ ChatGPT Proに入ってる人は今すぐ使える
 ```
 Phase 1 完全無料で公開中
 
-興味ある方は:
-⭐ GitHubでStarお願いします
-💬 質問はIssueかDMで
+必要なもの:
+・Claude Code
+・ChatGPT Pro（$200/月、Codex用）
+・Gemini CLI（無料）
+
+ChatGPT Pro に入ってる人は今すぐ使える
 
 https://github.com/AI-Driven-School/claude-codex-collab
 
-#Claude #ChatGPT #Codex #Gemini #AI開発 #個人開発
+⭐ Star お願いします
+
+#ClaudeCode #生成AI #個人開発 #OSS
 ```
 
 ---
 
-## 画像案
+## 単発ツイート案（記事公開時）
 
-1. **メインツイート用**: ターミナルのGIF（/project実行画面）
-2. **スレッド3用**: 生成されたファイル構造のスクショ
-3. **スレッド4用**: 6フェーズの図解
-4. **スレッド5用**: コスト比較の図
+```
+記事書きました
+
+「Claude Code 単体だと遅いので、Codex と分業させる OSS を作ってみた」
+
+・課題: Claude は賢いが、単純作業も課金される
+・解決: 設計は Claude、実装は Codex
+・結果: 75%コスト削減 + 設計書が残る
+
+[Zenn記事URL]
+
+#ClaudeCode #Codex #AI開発
+```
 
 ---
 
@@ -136,5 +157,5 @@ https://github.com/AI-Driven-School/claude-codex-collab
 ## ハッシュタグ
 
 ```
-#Claude #ChatGPT #Codex #Gemini #AI開発 #個人開発 #OSS #プログラミング
+#ClaudeCode #ChatGPT #Codex #生成AI #AI開発 #個人開発 #OSS
 ```

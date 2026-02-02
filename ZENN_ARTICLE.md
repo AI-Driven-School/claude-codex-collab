@@ -1,193 +1,80 @@
 ---
-title: "Claude + Codex + Gemini の3AI連携で開発コストを75%削減した話"
+title: "Claude Code 単体だと遅いので、Codex と分業させる OSS を作ってみた"
 emoji: "🤖"
 type: "tech"
-topics: ["claude", "chatgpt", "gemini", "ai", "開発効率化"]
+topics: ["claude", "chatgpt", "codex", "ai", "個人開発"]
 published: false
 ---
 
-## はじめに
+## TL;DR
 
-個人開発やスタートアップで、AIを使った開発効率化に興味はありませんか？
+- Claude Code は賢いが、単純作業もやらせると**高い＆遅い**
+- 設計は Claude、コーディングは Codex に分業させたら **75%コスト削減**
+- それを自動化する OSS を作った → [claude-codex-collab](https://github.com/AI-Driven-School/claude-codex-collab)
 
-今回、**Claude、Codex、Gemini**の3つのAIを連携させて、開発コストを**75%削減**する仕組みを作りました。
+![デモ動画](https://raw.githubusercontent.com/AI-Driven-School/claude-codex-collab/main/landing/promo.gif)
 
-実際にメンタルヘルスSaaS「StressAIAgent」の機能をこの方法で実装したので、その過程を共有します。
+---
 
-## なぜ3AI連携？
+## 課題: Claude Code は万能じゃない
 
-### 単一AIの問題
-
-Claude単体で開発すると、全ての処理に課金が発生します。
+Claude Code を使い始めて感じたこと:
 
 ```
-要件定義 → Claude（課金）
-設計 → Claude（課金）
-実装 → Claude（課金）← ここが一番コード量多い
-テスト → Claude（課金）
-レビュー → Claude（課金）
+✅ 設計判断が的確
+✅ レビューが丁寧
+❌ 単純なコーディングでも課金される
+❌ 大量のコード生成は遅い
 ```
 
-### 3AI連携の解決策
+例えば「CRUDのAPIを作って」というタスク。
 
-各AIの得意分野で分業させます：
+Claude は設計を考えながら慎重に実装するので、品質は高いが **時間もコストもかかる**。
 
-| AI | 役割 | コスト |
-|----|------|--------|
-| **Claude** | 設計・判断・レビュー | 従量課金 |
-| **Codex** | 実装・テスト | $0（ChatGPT Pro含む） |
-| **Gemini** | 大規模解析・リサーチ | 無料 |
+一方、Codex（ChatGPT Pro に含まれる）は `--full-auto` モードで **爆速でコードを吐く**。設計書さえあれば、単純作業は Codex の方が速い。
 
-実装とテストはコード量が多いため、ここをCodex（ChatGPT Proに含まれる）に任せるだけで大幅なコスト削減になります。
+---
 
-## /project コマンド
+## 解決策: AIに得意分野で分業させる
 
-このワークフローを自動化する `/project` コマンドを作りました。
+人間のチームと同じで、AIにも得意分野がある:
+
+| AI | 得意なこと | コスト |
+|----|-----------|--------|
+| **Claude** | 推論・設計・判断・レビュー | 従量課金 |
+| **Codex** | 高速コーディング・テスト生成 | $0（ChatGPT Pro含む） |
+| **Gemini** | 1Mトークンの大規模解析 | 無料 |
+
+これを組み合わせると:
+
+```
+Before: Claude に全部やらせる
+  → 1機能あたり $1.00
+
+After: 設計だけ Claude、実装は Codex
+  → 1機能あたり $0.25（75%削減）
+```
+
+---
+
+## 作ったもの: claude-codex-collab
+
+この分業を自動化する OSS を作りました。
+
+### `/project` コマンド
 
 ```bash
-> /project 組織分析AI
+> /project ユーザー認証
 
-[1/6] 要件定義   (Claude)  → docs/requirements/org-analysis-ai.md  ✓
-[2/6] 設計       (Claude)  → docs/specs/, docs/api/                ✓
-[3/6] 実装       (Codex)   → backend/, frontend/                   ★ $0
-[4/6] テスト     (Codex)   → tests/e2e/                            ★ $0
-[5/6] レビュー   (Claude)  → docs/reviews/                         ✓
-[6/6] デプロイ   → 承認後実行
+[1/6] 要件定義   (Claude)  → docs/requirements/auth.md  ✓
+[2/6] API設計    (Claude)  → docs/api/auth.yaml         ✓
+[3/6] 実装       (Codex)   → src/**/*.tsx               ★ full-auto ($0)
+[4/6] テスト     (Codex)   → tests/*.spec.ts            ★ $0
+[5/6] レビュー   (Claude)  → 改善提案                    ✓
+[6/6] デプロイ             → 承認後実行                  ✓
 ```
 
-各フェーズで承認/却下ができるため、AIの出力を確認しながら進められます。
-
-## 実際に作った機能
-
-### 組織分析AIダッシュボード
-
-メンタルヘルスSaaSに「組織全体のストレス傾向をAIが分析する機能」を追加しました。
-
-**生成されたファイル:**
-
-```
-docs/
-├── requirements/org-analysis-ai.md  # 要件定義
-├── specs/org-analysis-ai.md         # 画面設計
-├── api/org-analysis.yaml            # OpenAPI仕様
-└── reviews/org-analysis-ai.md       # レビュー結果
-
-backend/
-├── app/routers/org_analysis.py      # APIエンドポイント
-└── app/services/org_analysis_service.py  # ビジネスロジック
-
-frontend/
-└── app/admin/org-analysis/page.tsx  # ダッシュボード画面
-
-tests/
-└── e2e/org-analysis.spec.ts         # E2Eテスト（10ケース）
-```
-
-### 実装された機能
-
-- 組織全体のストレススコア表示
-- 部署別スコアのヒートマップ
-- 過去6ヶ月のトレンドグラフ
-- **GPT-4によるAIインサイト生成**
-- PDFレポート出力
-
-## AI分担の詳細
-
-### Phase 1-2: 設計（Claude）
-
-要件定義と設計はClaudeが担当。ユーザーストーリー、受入条件、API仕様を自動生成。
-
-```markdown
-# 要件定義: 組織分析AI
-
-## ユーザーストーリー
-
-AS A 人事担当者・経営層
-I WANT TO 組織全体のストレス傾向をAIが分析したレポートを見たい
-SO THAT データに基づいた意思決定と早期介入ができる
-
-## 受入条件
-
-- [x] 部署別ストレススコアの集計・可視化
-- [x] AIによる傾向分析コメント生成
-- [x] 前月比・前年比の変化表示
-...
-```
-
-### Phase 3-4: 実装・テスト（Codex）
-
-設計書をCodexに渡して実装を委譲。
-
-```bash
-codex exec --full-auto "
-以下の設計書を読み込み、実装してください。
-
-【要件定義】
-$(cat docs/requirements/org-analysis-ai.md)
-
-【API設計】
-$(cat docs/api/org-analysis.yaml)
-
-【画面設計】
-$(cat docs/specs/org-analysis-ai.md)
-"
-```
-
-Codexは `--full-auto` モードで承認なしに実装を進めます。
-
-### Phase 5: レビュー（Claude）
-
-実装されたコードをClaudeがレビュー。
-
-```markdown
-# コードレビュー: 組織分析AI
-
-## サマリー
-
-| 項目 | 結果 |
-|------|------|
-| 受入条件 | 6/6 クリア ✅ |
-| テストカバレッジ | 10ケース |
-| 改善提案 | 3件 |
-| ブロッカー | 0件 |
-
-## 判定: ✅ PASS
-```
-
-## コスト比較
-
-### Before: Claude単体
-
-```
-要件定義: $0.05
-設計: $0.10
-実装: $0.60  ← 一番重い
-テスト: $0.20
-レビュー: $0.05
------------------
-合計: $1.00
-```
-
-### After: 3AI連携
-
-```
-要件定義: $0.05 (Claude)
-設計: $0.10 (Claude)
-実装: $0.00 (Codex) ★
-テスト: $0.00 (Codex) ★
-レビュー: $0.05 (Claude)
-解析: $0.00 (Gemini) ★
------------------
-合計: $0.20 → 80%削減
-```
-
-## 導入方法
-
-### 必要なもの
-
-- Claude Code CLI
-- ChatGPT Pro（$200/月）→ Codex含む
-- Gemini CLI（無料）
+**各フェーズで承認/却下ができる**ので、AIに全部任せるのが怖い人でも安心。
 
 ### インストール
 
@@ -196,25 +83,144 @@ curl -fsSL https://raw.githubusercontent.com/AI-Driven-School/claude-codex-colla
 cd my-app && claude
 ```
 
-### 使い方
+---
 
-```bash
-> /project ユーザー認証
+## Before / After
+
+### Before: Claude 単体
+
+```
+$ claude
+
+> ユーザー認証機能を作って
+
+（Claude が全部やる）
+- 要件を考える... $0.05
+- 設計を考える... $0.10
+- コードを書く... $0.60  ← ここが重い
+- テストを書く... $0.20
+- レビュー...     $0.05
+──────────────────────
+合計: $1.00
 ```
 
-これだけで6フェーズが順次実行されます。
+### After: 3AI 分業
+
+```
+$ claude
+
+> /project ユーザー認証
+
+[1/6] 要件定義 (Claude)... $0.05
+[2/6] API設計 (Claude)...  $0.10
+[3/6] 実装 (Codex)...      $0.00 ★
+[4/6] テスト (Codex)...    $0.00 ★
+[5/6] レビュー (Claude)... $0.05
+──────────────────────────────
+合計: $0.20（80%削減）
+```
+
+しかも **設計書が全部残る**:
+
+```
+my-app/
+├── docs/
+│   ├── requirements/auth.md   # 要件定義
+│   ├── api/auth.yaml          # API設計（OpenAPI）
+│   └── specs/login.md         # 画面設計
+├── src/                       # 実装コード
+└── tests/                     # テスト
+```
+
+一人開発でも、後から見返せるドキュメントが自動生成される。
+
+---
+
+## 実際に作った機能
+
+メンタルヘルス SaaS「StressAIAgent」に「組織分析AI」機能を追加した時の例:
+
+```bash
+> /project 組織分析AI
+```
+
+### 生成された成果物
+
+| 種類 | ファイル | 担当AI |
+|-----|---------|--------|
+| 要件定義 | `docs/requirements/org-analysis-ai.md` | Claude |
+| API設計 | `docs/api/org-analysis.yaml` | Claude |
+| 画面設計 | `docs/specs/org-analysis-ai.md` | Claude |
+| バックエンド | `backend/app/routers/org_analysis.py` | **Codex** |
+| フロントエンド | `frontend/app/admin/org-analysis/page.tsx` | **Codex** |
+| E2Eテスト | `tests/e2e/org-analysis.spec.ts` (10ケース) | **Codex** |
+| レビュー | `docs/reviews/org-analysis-ai.md` | Claude |
+
+### 実装された機能
+
+- 組織全体のストレススコア表示
+- 部署別スコアのヒートマップ
+- 過去6ヶ月のトレンドグラフ
+- **GPT-4 によるAIインサイト生成**
+- PDFレポート出力
+
+---
+
+## なぜ「AIにレビューさせる」と安心なのか
+
+「AIに全部任せるのは怖い」という声をよく聞きます。
+
+このワークフローでは:
+
+1. **Codex が実装** → 速いが雑な可能性あり
+2. **Claude がレビュー** → 設計書との整合性をチェック
+
+AI 同士でレビューさせることで、人間は最終確認だけで済む。
+
+```markdown
+# コードレビュー: 組織分析AI
+
+## サマリー
+- 受入条件: 6/6 クリア ✅
+- テストカバレッジ: 10ケース
+- 改善提案: 3件（軽微）
+- ブロッカー: 0件
+
+## 判定: ✅ PASS
+```
+
+---
+
+## 必要なもの
+
+| 項目 | 備考 |
+|-----|------|
+| Claude Code | `npm install -g @anthropic-ai/claude-code` |
+| ChatGPT Pro | $200/月（Codex 含む） |
+| Gemini CLI | 無料 `npm install -g @google/gemini-cli` |
+
+ChatGPT Pro に入っている人は、今すぐ使えます。
+
+---
 
 ## まとめ
 
-3AI連携のメリット：
+| 観点 | Before | After |
+|-----|--------|-------|
+| コスト | $1.00/機能 | $0.25/機能（75%削減） |
+| ドキュメント | なし | 自動生成 |
+| 安心感 | AI任せで不安 | AI同士でレビュー |
 
-1. **コスト削減**: 実装・テストを$0で実行
-2. **設計書が残る**: 一人開発でもドキュメント化
-3. **品質担保**: 各フェーズで承認/却下
-4. **AI分業**: 各AIの得意分野を活用
+GitHub: https://github.com/AI-Driven-School/claude-codex-collab
 
-OSSで公開しているので、ぜひ試してみてください。
+Phase 1 は完全無料です。Issue や PR 大歓迎。
 
-https://github.com/AI-Driven-School/claude-codex-collab
+---
 
-質問やフィードバックはGitHub IssueまたはTwitter DMでお待ちしています。
+## 関連リンク
+
+- [GitHub リポジトリ](https://github.com/AI-Driven-School/claude-codex-collab)
+- [導入ガイド](https://github.com/AI-Driven-School/claude-codex-collab/blob/main/docs/GETTING_STARTED.md)
+- [ベンチマーク結果](https://github.com/AI-Driven-School/claude-codex-collab/blob/main/benchmarks/BENCHMARK_RESULTS.md)
+
+質問・フィードバックは [GitHub Issues](https://github.com/AI-Driven-School/claude-codex-collab/issues) または X で [@your_handle] まで。
