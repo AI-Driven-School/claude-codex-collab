@@ -1,5 +1,8 @@
 # 一人で作っても、設計書が残る
 
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/yu010101?style=for-the-badge&logo=github&label=Sponsor)](https://github.com/sponsors/yu010101)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
 ```bash
 /project ユーザー認証
 ```
