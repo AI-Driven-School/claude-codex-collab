@@ -192,7 +192,7 @@ Codexは `--full-auto` モードで承認なしに実装を進めます。
 ### インストール
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install-fullstack.sh | bash -s -- my-app
+curl -fsSL https://raw.githubusercontent.com/AI-Driven-School/claude-codex-collab/main/install-fullstack.sh | bash -s -- my-app
 cd my-app && claude
 ```
 
@@ -215,6 +215,6 @@ cd my-app && claude
 
 OSSで公開しているので、ぜひ試してみてください。
 
-https://github.com/yu010101/claude-codex-collab
+https://github.com/AI-Driven-School/claude-codex-collab
 
 質問やフィードバックはGitHub IssueまたはTwitter DMでお待ちしています。

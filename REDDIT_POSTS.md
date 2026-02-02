@@ -61,7 +61,7 @@ All from one `/project 組織分析AI` command.
 
 ## Open Source
 
-GitHub: https://github.com/yu010101/claude-codex-collab
+GitHub: https://github.com/AI-Driven-School/claude-codex-collab
 
 Would love feedback! Especially interested in:
 - Other ways to optimize the workflow
@@ -128,7 +128,7 @@ Built a full dashboard feature for my SaaS using this workflow:
 
 ## Links
 
-- GitHub: https://github.com/yu010101/claude-codex-collab
+- GitHub: https://github.com/AI-Driven-School/claude-codex-collab
 - Demo GIF in the README
 
 It's MIT licensed, totally free. Would appreciate a ⭐ if you find it useful!
@@ -163,7 +163,7 @@ Found a way to get more value from my ChatGPT Pro subscription by using Codex al
 Codex is included in ChatGPT Pro but many people don't use it. By delegating the heavy coding work to Codex, you save on Claude costs while still using Claude for the parts it's best at (reasoning, design decisions).
 
 Built an open-source CLI that automates this workflow:
-https://github.com/yu010101/claude-codex-collab
+https://github.com/AI-Driven-School/claude-codex-collab
 
 One command generates requirements → design → code → tests → review.
 

@@ -14,7 +14,7 @@ Claude + Codex + Gemini の3AI連携でSaaSを作ってみた
 
 OSSで公開したので使ってみてください👇
 
-https://github.com/yu010101/claude-codex-collab
+https://github.com/AI-Driven-School/claude-codex-collab
 ```
 
 ---
@@ -110,7 +110,7 @@ Phase 1 完全無料で公開中
 ⭐ GitHubでStarお願いします
 💬 質問はIssueかDMで
 
-https://github.com/yu010101/claude-codex-collab
+https://github.com/AI-Driven-School/claude-codex-collab
 
 #Claude #ChatGPT #Codex #Gemini #AI開発 #個人開発
 ```

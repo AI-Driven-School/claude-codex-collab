@@ -1,8 +1,8 @@
 # 実装2倍速、コスト75%削減
 
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/yu010101?style=for-the-badge&logo=github&label=Sponsor)](https://github.com/sponsors/yu010101)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/AI-Driven-School?style=for-the-badge&logo=github&label=Sponsor)](https://github.com/sponsors/AI-Driven-School)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![Phase](https://img.shields.io/badge/Phase_1-完全無料-22c55e?style=for-the-badge)](https://github.com/yu010101/claude-codex-collab)
+[![Phase](https://img.shields.io/badge/Phase_1-完全無料-22c55e?style=for-the-badge)](https://github.com/AI-Driven-School/claude-codex-collab)
 
 <p align="center">
   <img src="./landing/promo.gif" alt="3AI協調開発デモ" width="700">
@@ -19,7 +19,7 @@
 
 ```bash
 # 1. インストール
-curl -fsSL https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install-fullstack.sh | bash -s -- my-app
+curl -fsSL https://raw.githubusercontent.com/AI-Driven-School/claude-codex-collab/main/install-fullstack.sh | bash -s -- my-app
 
 # 2. 開発開始
 cd my-app && claude
@@ -166,13 +166,13 @@ my-app/
 
 Phase 1は完全無料です。開発を支援してくださる方は:
 
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/yu010101?style=for-the-badge&logo=github&label=Sponsor)](https://github.com/sponsors/yu010101)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/AI-Driven-School?style=for-the-badge&logo=github&label=Sponsor)](https://github.com/sponsors/AI-Driven-School)
 
 ---
 
 <p align="center">
   MIT License<br>
-  <a href="https://github.com/yu010101/claude-codex-collab">GitHub</a> ·
-  <a href="https://github.com/yu010101/claude-codex-collab/issues">Issues</a> ·
-  <a href="https://github.com/sponsors/yu010101">Sponsor</a>
+  <a href="https://github.com/AI-Driven-School/claude-codex-collab">GitHub</a> ·
+  <a href="https://github.com/AI-Driven-School/claude-codex-collab/issues">Issues</a> ·
+  <a href="https://github.com/sponsors/AI-Driven-School">Sponsor</a>
 </p>

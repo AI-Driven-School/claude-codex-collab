@@ -44,21 +44,21 @@
 ### 方法1: ワンライナー（推奨）
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install-fullstack.sh | bash -s -- my-project
+curl -fsSL https://raw.githubusercontent.com/AI-Driven-School/claude-codex-collab/main/install-fullstack.sh | bash -s -- my-project
 ```
 
 ### 方法2: 既存プロジェクトに追加
 
 ```bash
 cd your-project
-curl -fsSL https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install-fullstack.sh | bash
+curl -fsSL https://raw.githubusercontent.com/AI-Driven-School/claude-codex-collab/main/install-fullstack.sh | bash
 ```
 
 ### 方法3: 手動インストール
 
 ```bash
 # リポジトリをクローン
-git clone https://github.com/yu010101/claude-codex-collab.git
+git clone https://github.com/AI-Driven-School/claude-codex-collab.git
 cd claude-codex-collab
 
 # 既存プロジェクトにコピー
@@ -137,7 +137,7 @@ my-project/
 ### 1. プロジェクト作成
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install-fullstack.sh | bash -s -- todo-app
+curl -fsSL https://raw.githubusercontent.com/AI-Driven-School/claude-codex-collab/main/install-fullstack.sh | bash -s -- todo-app
 cd todo-app
 ```
 

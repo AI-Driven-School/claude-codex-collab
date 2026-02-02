@@ -20,7 +20,7 @@
 
 ```bash
 # テンプレートをインストール
-curl -fsSL https://raw.githubusercontent.com/yu010101/claude-codex-collab/main/install-fullstack.sh | bash -s -- todo-app
+curl -fsSL https://raw.githubusercontent.com/AI-Driven-School/claude-codex-collab/main/install-fullstack.sh | bash -s -- todo-app
 
 # ディレクトリに移動
 cd todo-app
