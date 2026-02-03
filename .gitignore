@@ -1,0 +1,50 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.vercel
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code local files
+.claude/.edit_counter
+.claude/checkpoints/
+
+# Task outputs
+.delegate-tasks/
+.codex-tasks/
+.project-state-*
+
+# Test workspaces
+benchmarks/workspace/
