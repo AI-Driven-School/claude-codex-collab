@@ -1,0 +1,91 @@
+#!/bin/bash
+# StressAIAgent CLI - 閉じたループのための統一コマンド
+
+set -e
+cd "$(dirname "$0")"
+
+CMD=${1:-help}
+shift 2>/dev/null || true
+
+case "$CMD" in
+  run|dev)
+    echo "🚀 Starting development servers..."
+    docker-compose up -d
+    (cd backend && source venv/bin/activate 2>/dev/null && uvicorn app.main:app --reload --port 8000) &
+    BACKEND_PID=$!
+    (cd frontend && npm run dev) &
+    FRONTEND_PID=$!
+    trap "kill $BACKEND_PID $FRONTEND_PID 2>/dev/null" EXIT
+    wait
+    ;;
+
+  test)
+    echo "🧪 Running tests..."
+    npx playwright test "$@"
+    ;;
+
+  test:ui)
+    echo "🧪 Running tests with UI..."
+    npx playwright test --ui
+    ;;
+
+  build)
+    echo "📦 Building..."
+    cd frontend && npm run build
+    ;;
+
+  db)
+    echo "🗄️ Starting database..."
+    docker-compose up -d
+    ;;
+
+  db:stop)
+    echo "🛑 Stopping database..."
+    docker-compose down
+    ;;
+
+  log|logs)
+    docker-compose logs -f
+    ;;
+
+  clean)
+    echo "🧹 Cleaning..."
+    docker-compose down -v
+    rm -rf frontend/.next
+    rm -rf playwright-report
+    ;;
+
+  commit)
+    MSG=${1:-"Update"}
+    git add -A && git commit -m "$MSG"
+    ;;
+
+  status|st)
+    git status -s
+    ;;
+
+  help|*)
+    cat << 'EOF'
+StressAIAgent CLI
+
+Usage: ./stress <command>
+
+Commands:
+  run, dev     Start all development servers
+  test         Run Playwright tests
+  test:ui      Run tests with Playwright UI
+  build        Build frontend
+  db           Start database
+  db:stop      Stop database
+  logs         Show logs
+  clean        Clean all artifacts
+  commit <msg> Git add all & commit
+  status, st   Git status
+
+Examples:
+  ./stress run
+  ./stress test
+  ./stress commit "Add feature"
+EOF
+    ;;
+esac

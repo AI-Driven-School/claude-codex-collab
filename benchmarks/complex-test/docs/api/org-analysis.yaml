@@ -1,0 +1,231 @@
+openapi: 3.0.0
+info:
+  title: 組織分析AI API
+  version: 1.0.0
+  description: 組織全体のストレス分析とAIインサイト生成
+
+paths:
+  /api/v1/admin/org-analysis:
+    get:
+      summary: 組織分析データ取得
+      description: 組織全体のストレススコア、部署別データ、AIインサイトを取得
+      tags:
+        - Organization Analysis
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgAnalysisResponse'
+        '401':
+          description: 認証エラー
+        '403':
+          description: 権限エラー（管理者のみ）
+
+  /api/v1/admin/org-analysis/generate-report:
+    post:
+      summary: PDFレポート生成
+      description: 組織分析結果をPDFレポートとして生成
+      tags:
+        - Organization Analysis
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportGenerationResponse'
+        '401':
+          description: 認証エラー
+        '403':
+          description: 権限エラー
+
+  /api/v1/admin/org-analysis/department/{department_id}:
+    get:
+      summary: 部署詳細分析
+      description: 特定部署の詳細なストレス分析データを取得
+      tags:
+        - Organization Analysis
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: department_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentDetailResponse'
+        '404':
+          description: 部署が見つからない
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    OrgAnalysisResponse:
+      type: object
+      required:
+        - organization_score
+        - score_change
+        - total_employees
+        - response_rate
+        - departments
+        - trends
+        - ai_insights
+      properties:
+        organization_score:
+          type: number
+          format: float
+          description: 組織全体の平均ストレススコア (0-100)
+          example: 65.5
+        score_change:
+          type: number
+          format: float
+          description: 前月比変化
+          example: -2.3
+        total_employees:
+          type: integer
+          description: 総従業員数
+          example: 150
+        response_rate:
+          type: number
+          format: float
+          description: 回答率 (%)
+          example: 85.5
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepartmentScore'
+        trends:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrendData'
+        ai_insights:
+          $ref: '#/components/schemas/AIInsights'
+
+    DepartmentScore:
+      type: object
+      required:
+        - id
+        - name
+        - score
+        - employee_count
+        - risk_level
+      properties:
+        id:
+          type: string
+          example: "dept-1"
+        name:
+          type: string
+          example: "営業部"
+        score:
+          type: number
+          format: float
+          example: 72.5
+        employee_count:
+          type: integer
+          example: 30
+        risk_level:
+          type: string
+          enum: [low, medium, high]
+          example: "high"
+
+    TrendData:
+      type: object
+      required:
+        - month
+        - score
+      properties:
+        month:
+          type: string
+          example: "2026-01"
+        score:
+          type: number
+          format: float
+          example: 67.8
+
+    AIInsights:
+      type: object
+      required:
+        - summary
+        - risk_factors
+        - recommendations
+      properties:
+        summary:
+          type: string
+          description: AI生成の分析サマリー
+          example: "全体的なストレスレベルは安定していますが、営業部で高ストレス傾向が見られます。"
+        risk_factors:
+          type: array
+          items:
+            type: string
+          example: ["残業時間増加", "人員不足"]
+        recommendations:
+          type: array
+          items:
+            type: string
+          example: ["1on1ミーティングの強化", "業務分担の見直し"]
+
+    ReportGenerationResponse:
+      type: object
+      required:
+        - report_url
+        - generated_at
+      properties:
+        report_url:
+          type: string
+          example: "/reports/org-analysis-2026-02.pdf"
+        generated_at:
+          type: string
+          format: date-time
+          example: "2026-02-02T15:00:00Z"
+
+    DepartmentDetailResponse:
+      type: object
+      required:
+        - department
+        - monthly_scores
+        - stress_factors
+        - high_risk_count
+        - ai_analysis
+      properties:
+        department:
+          $ref: '#/components/schemas/DepartmentScore'
+        monthly_scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrendData'
+        stress_factors:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+                example: "仕事の量"
+              score:
+                type: number
+                example: 3.8
+        high_risk_count:
+          type: integer
+          description: 高ストレス者数
+          example: 5
+        ai_analysis:
+          type: string
+          description: 部署固有のAI分析
+          example: "営業部では特に仕事の量と対人関係に関するストレスが高い傾向があります。"
