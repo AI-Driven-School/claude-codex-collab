@@ -223,11 +223,44 @@ You: "Review my code"
 
 ---
 
+## Adoption Paths
+
+Start small and add AIs as needed:
+
+| Mode | Command | AIs | Best for |
+|------|---------|-----|----------|
+| Claude only | `--claude-only` | Claude | Getting started, small projects |
+| Claude + Codex | `--claude-codex` | Claude, Codex | Implementation-heavy projects |
+| Claude + Gemini | `--claude-gemini` | Claude, Gemini | Research-heavy projects |
+| Full (default) | `--full` | All 3 | Maximum productivity |
+
+```bash
+# Start with Claude only
+bash install-fullstack.sh my-app --claude-only
+
+# Later, upgrade to full 3-AI
+bash install-fullstack.sh my-app --full
+```
+
+---
+
+## AI CLI Compatibility
+
+| Tool | Min Version | Max Tested | Required |
+|------|:-----------:|:----------:|:--------:|
+| Claude Code | 1.0.0 | 2.0.0 | Yes |
+| Codex CLI | 0.1.0 | 1.0.0 | No |
+| Gemini CLI | 0.1.0 | 1.0.0 | No |
+
+Version compatibility is automatically checked during installation and delegation. See `.ai-versions.json` for details.
+
+---
+
 ## System Requirements
 
 - macOS / Linux / WSL2
 - Node.js 18+
-- ChatGPT Pro (for Codex CLI, $200/month)
+- ChatGPT Pro (for Codex CLI, $200/month) - optional with `--claude-only` mode
 - Gemini CLI (free, optional for research tasks)
 
 ---

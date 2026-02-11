@@ -6,31 +6,94 @@
 
 set -e
 
-VERSION="6.1.0"
+# shellcheck disable=SC2034
+VERSION="6.2.0"
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+RED='\033[0;31m'
 NC='\033[0m'
+
+# ===== Adoption mode parsing =====
+ADOPTION_MODE="full"
+PROJECT_NAME=""
+
+for arg in "$@"; do
+    case "$arg" in
+        --claude-only)
+            ADOPTION_MODE="claude-only"
+            ;;
+        --claude-codex)
+            ADOPTION_MODE="claude-codex"
+            ;;
+        --claude-gemini)
+            ADOPTION_MODE="claude-gemini"
+            ;;
+        --full)
+            ADOPTION_MODE="full"
+            ;;
+        --help|-h)
+            echo "Usage: $0 [project-name] [--claude-only|--claude-codex|--claude-gemini|--full]"
+            echo ""
+            echo "Adoption modes:"
+            echo "  --claude-only    Claude Code only (no external AI delegation)"
+            echo "  --claude-codex   Claude + Codex (implementation delegation)"
+            echo "  --claude-gemini  Claude + Gemini (research delegation)"
+            echo "  --full           All 3 AIs (default)"
+            echo ""
+            echo "Examples:"
+            echo "  $0 my-app --claude-only    # Start with Claude only"
+            echo "  $0 my-app --full           # Full 3-AI setup"
+            exit 0
+            ;;
+        -*)
+            echo "Unknown option: $arg"
+            exit 1
+            ;;
+        *)
+            PROJECT_NAME="$arg"
+            ;;
+    esac
+done
 
 echo -e "${CYAN}"
 echo "┌─────────────────────────────────────────────────────────┐"
 echo "│                                                         │"
-echo "│   3AI協調開発テンプレート v6.1                          │"
+echo "│   3AI協調開発テンプレート v6.2                          │"
 echo "│                                                         │"
+case "$ADOPTION_MODE" in
+    claude-only)
+echo "│   Mode: Claude only                                     │"
+echo "│   Claude → 設計・判断・実装                             │"
+        ;;
+    claude-codex)
+echo "│   Mode: Claude + Codex                                  │"
+echo "│   Claude → 設計・判断                                   │"
+echo "│   Codex  → 実装・テスト                                 │"
+        ;;
+    claude-gemini)
+echo "│   Mode: Claude + Gemini                                 │"
+echo "│   Claude → 設計・判断・実装                             │"
+echo "│   Gemini → 解析・リサーチ                               │"
+        ;;
+    full)
+echo "│   Mode: Full 3-AI collaboration                         │"
 echo "│   Claude → 設計・判断                                   │"
 echo "│   Codex  → 実装・テスト（メイン）                       │"
 echo "│   Gemini → 解析・リサーチ                               │"
+        ;;
+esac
 echo "│                                                         │"
 echo "└─────────────────────────────────────────────────────────┘"
 echo -e "${NC}"
 
-PROJECT_NAME="${1:-}"
 if [ -n "$PROJECT_NAME" ]; then
     mkdir -p "$PROJECT_NAME"
     cd "$PROJECT_NAME"
 fi
+# shellcheck disable=SC2034
 PROJECT_DIR=$(pwd)
 
 echo "ツールを確認中..."
@@ -47,25 +110,57 @@ done
 
 echo ""
 
+# Determine required and optional AIs based on adoption mode
+REQUIRED_AIS=("claude")
+OPTIONAL_AIS=()
+case "$ADOPTION_MODE" in
+    claude-only)
+        OPTIONAL_AIS=()
+        ;;
+    claude-codex)
+        REQUIRED_AIS+=("codex")
+        ;;
+    claude-gemini)
+        REQUIRED_AIS+=("gemini")
+        ;;
+    full)
+        REQUIRED_AIS+=("codex" "gemini")
+        ;;
+esac
+
 MISSING_AI=0
-for cmd in claude codex gemini; do
+for cmd in "${REQUIRED_AIS[@]}"; do
     if command -v "$cmd" &> /dev/null; then
-        echo -e "  ${GREEN}✓${NC} $cmd"
+        echo -e "  ${GREEN}✓${NC} $cmd (required)"
     else
-        echo -e "  ${YELLOW}○${NC} $cmd"
+        echo -e "  ${RED}✗${NC} $cmd (required)"
         MISSING_AI=1
+    fi
+done
+
+for cmd in "${OPTIONAL_AIS[@]}"; do
+    if command -v "$cmd" &> /dev/null; then
+        echo -e "  ${GREEN}✓${NC} $cmd (optional)"
+    else
+        echo -e "  ${YELLOW}○${NC} $cmd (optional)"
     fi
 done
 
 echo ""
 
 if [ $MISSING_AI -eq 1 ]; then
-    read -p "AIツールをインストール？ [Y/n] " -n 1 -r
+    read -p "必須AIツールをインストール？ [Y/n] " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-        command -v claude &> /dev/null || npm install -g @anthropic-ai/claude-code
-        command -v codex &> /dev/null || npm install -g @openai/codex
-        command -v gemini &> /dev/null || npm install -g @google/gemini-cli
+        for cmd in "${REQUIRED_AIS[@]}"; do
+            if ! command -v "$cmd" &> /dev/null; then
+                case "$cmd" in
+                    claude) npm install -g @anthropic-ai/claude-code ;;
+                    codex)  npm install -g @openai/codex ;;
+                    gemini) npm install -g @google/gemini-cli ;;
+                esac
+            fi
+        done
         echo -e "${GREEN}✓ インストール完了${NC}"
     fi
 fi
@@ -316,7 +411,8 @@ Claude設計 → Codex実装 → Claudeレビューの完全フロー。
 ```
 EOF
 
-# ===== スキル: implement =====
+# ===== スキル: implement (Codex modes only) =====
+if [ "$ADOPTION_MODE" = "claude-codex" ] || [ "$ADOPTION_MODE" = "full" ]; then
 cat > .claude/skills/implement.md << 'EOF'
 ---
 name: implement
@@ -357,7 +453,7 @@ src/
 ```
 EOF
 
-# ===== スキル: test =====
+# ===== スキル: test (Codex modes only) =====
 cat > .claude/skills/test.md << 'EOF'
 ---
 name: test
@@ -381,6 +477,7 @@ Codexでテストを生成。実装と同じAIなので一貫性あり。
 ./scripts/delegate.sh codex test
 ```
 EOF
+fi  # end Codex modes
 
 # ===== スキル: review =====
 cat > .claude/skills/review.md << 'EOF'
@@ -411,7 +508,8 @@ Claudeでコードレビュー。設計意図との整合性をチェック。
 - 可読性
 EOF
 
-# ===== スキル: analyze =====
+# ===== スキル: analyze (Gemini modes only) =====
+if [ "$ADOPTION_MODE" = "claude-gemini" ] || [ "$ADOPTION_MODE" = "full" ]; then
 cat > .claude/skills/analyze.md << 'EOF'
 ---
 name: analyze
@@ -436,7 +534,7 @@ Geminiの1Mトークンコンテキストで大規模コード解析。
 ```
 EOF
 
-# ===== スキル: research =====
+# ===== スキル: research (Gemini modes only) =====
 cat > .claude/skills/research.md << 'EOF'
 ---
 name: research
@@ -460,6 +558,7 @@ Geminiで技術リサーチ。無料なので気軽に。
 ./scripts/delegate.sh gemini research "質問"
 ```
 EOF
+fi  # end Gemini modes
 
 # ===== スキル: requirements =====
 cat > .claude/skills/requirements.md << 'EOF'
@@ -625,13 +724,17 @@ EOF
 # ===== 完了メッセージ =====
 echo ""
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}セットアップ完了 v6.0${NC}"
+echo -e "${GREEN}セットアップ完了 v6.2 (mode: ${ADOPTION_MODE})${NC}"
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo -e "${CYAN}3AI役割分担:${NC}"
+echo -e "${CYAN}役割分担 (${ADOPTION_MODE}):${NC}"
 echo -e "  ${BLUE}Claude${NC}  → 設計・判断・レビュー"
+if [ "$ADOPTION_MODE" = "claude-codex" ] || [ "$ADOPTION_MODE" = "full" ]; then
 echo -e "  ${BLUE}Codex${NC}   → 実装・テスト（メイン）"
+fi
+if [ "$ADOPTION_MODE" = "claude-gemini" ] || [ "$ADOPTION_MODE" = "full" ]; then
 echo -e "  ${BLUE}Gemini${NC}  → 解析・リサーチ"
+fi
 echo ""
 echo -e "${CYAN}開始:${NC}"
 echo -e "  ${BLUE}claude${NC}"
@@ -641,9 +744,23 @@ echo -e "${CYAN}個別コマンド:${NC}"
 echo -e "  ${BLUE}/requirements${NC}  要件定義（Claude）"
 echo -e "  ${BLUE}/spec${NC}          画面設計（Claude）"
 echo -e "  ${BLUE}/api${NC}           API設計（Claude）"
+if [ "$ADOPTION_MODE" = "claude-codex" ] || [ "$ADOPTION_MODE" = "full" ]; then
 echo -e "  ${BLUE}/implement${NC}     実装（Codex）"
 echo -e "  ${BLUE}/test${NC}          テスト（Codex）"
+fi
 echo -e "  ${BLUE}/review${NC}        レビュー（Claude）"
+if [ "$ADOPTION_MODE" = "claude-gemini" ] || [ "$ADOPTION_MODE" = "full" ]; then
 echo -e "  ${BLUE}/analyze${NC}       解析（Gemini）"
 echo -e "  ${BLUE}/research${NC}      リサーチ（Gemini）"
+fi
 echo ""
+
+# ===== AI Version Compatibility Check =====
+SCRIPT_SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -f "$SCRIPT_SOURCE_DIR/scripts/lib/version-check.sh" ]; then
+    source "$SCRIPT_SOURCE_DIR/scripts/lib/version-check.sh"
+    if [ -f "$SCRIPT_SOURCE_DIR/.ai-versions.json" ]; then
+        check_all_versions "$SCRIPT_SOURCE_DIR/.ai-versions.json"
+        echo ""
+    fi
+fi
