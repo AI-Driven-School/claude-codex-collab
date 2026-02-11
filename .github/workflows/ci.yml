@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-scripts:
+    name: Lint Shell Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+      - name: Run ShellCheck
+        run: |
+          find . -name "*.sh" -not -path "./node_modules/*" -not -path "./.git/*" | \
+            xargs shellcheck --severity=warning || true
+
+  validate-skills:
+    name: Validate Skills
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check SKILL.md files exist
+        run: |
+          errors=0
+          for dir in .claude/skills/*/; do
+            if [ ! -f "$dir/SKILL.md" ]; then
+              echo "ERROR: Missing SKILL.md in $dir"
+              errors=$((errors + 1))
+            fi
+          done
+          if [ $errors -gt 0 ]; then exit 1; fi
+      - name: Validate frontmatter
+        run: |
+          errors=0
+          for skill in .claude/skills/*/SKILL.md; do
+            dir=$(basename "$(dirname "$skill")")
+            name=$(head -10 "$skill" | grep "^name:" | sed 's/name: *//')
+            desc=$(head -10 "$skill" | grep "^description:" | sed 's/description: *//')
+            if [ -z "$name" ]; then
+              echo "ERROR: Missing name in $skill"
+              errors=$((errors + 1))
+            elif [ "$name" != "$dir" ]; then
+              echo "ERROR: name '$name' != directory '$dir' in $skill"
+              errors=$((errors + 1))
+            fi
+            if [ -z "$desc" ]; then
+              echo "ERROR: Missing description in $skill"
+              errors=$((errors + 1))
+            fi
+          done
+          echo "Validated $(find .claude/skills -name SKILL.md | wc -l | tr -d ' ') skills"
+          if [ $errors -gt 0 ]; then exit 1; fi
+
+  check-docs:
+    name: Check Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required files exist
+        run: |
+          for f in README.md LICENSE CONTRIBUTING.md SECURITY.md CHANGELOG.md; do
+            if [ ! -f "$f" ]; then
+              echo "ERROR: Missing $f"
+              exit 1
+            fi
+          done
+          echo "All required docs present"

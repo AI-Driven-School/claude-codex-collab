@@ -224,7 +224,7 @@ run_gemini() {
     # Geminiがインストールされているか確認
     if ! command -v gemini &> /dev/null; then
         log_error "Gemini CLIがインストールされていません"
-        log_info "インストール: npm install -g @anthropic/gemini-cli"
+        log_info "インストール: npm install -g @google/gemini-cli"
         exit 1
     fi
 
