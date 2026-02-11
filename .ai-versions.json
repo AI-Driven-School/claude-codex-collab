@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "description": "AI CLI version compatibility matrix for claude-codex-collab",
+  "tools": {
+    "claude": {
+      "display_name": "Claude Code",
+      "min_version": "1.0.0",
+      "max_tested": "2.0.0",
+      "install_command": "npm install -g @anthropic-ai/claude-code",
+      "version_command": "claude --version",
+      "required": true,
+      "notes": "Core orchestrator. Required for all workflows."
+    },
+    "codex": {
+      "display_name": "Codex CLI",
+      "min_version": "0.1.0",
+      "max_tested": "1.0.0",
+      "install_command": "npm install -g @openai/codex",
+      "version_command": "codex --version",
+      "required": false,
+      "notes": "Implementation engine. Requires ChatGPT Pro subscription."
+    },
+    "gemini": {
+      "display_name": "Gemini CLI",
+      "min_version": "0.1.0",
+      "max_tested": "1.0.0",
+      "install_command": "npm install -g @google/gemini-cli",
+      "version_command": "gemini --version",
+      "required": false,
+      "notes": "Analysis and research. Free to use."
+    }
+  }
+}
