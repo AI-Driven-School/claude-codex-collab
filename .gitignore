@@ -48,3 +48,12 @@ Thumbs.db
 
 # Test workspaces
 benchmarks/workspace/
+
+# Binary assets (use GitHub Releases for distribution)
+*.mp4
+*.gif
+*.mov
+
+# Marketing materials (local only)
+marketing/
+!marketing/README.md
