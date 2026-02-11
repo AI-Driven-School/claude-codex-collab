@@ -1,0 +1,69 @@
+openapi: 3.0.0
+info:
+  title: 組織分析AI API
+  version: 1.0.0
+  description: 組織分析AI機能のAPI仕様
+
+paths:
+  /api/組織分析AI:
+    get:
+      summary: 組織分析AI一覧取得
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/組織分析AIItem'
+
+    post:
+      summary: 組織分析AI作成
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/組織分析AIInput'
+      responses:
+        '201':
+          description: 作成成功
+        '400':
+          description: バリデーションエラー
+
+  /api/組織分析AI/{id}:
+    get:
+      summary: 組織分析AI詳細取得
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+        '404':
+          description: 見つからない
+
+components:
+  schemas:
+    組織分析AIItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    組織分析AIInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
