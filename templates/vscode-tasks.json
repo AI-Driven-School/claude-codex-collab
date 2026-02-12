@@ -1,0 +1,116 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Project: Full Pipeline",
+      "type": "shell",
+      "command": "claude",
+      "args": ["-p", "/project ${input:featureName}"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Delegate: Implement with Codex",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/delegate.sh", "codex", "implement", "${input:taskDescription}"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Delegate: Test with Codex",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/delegate.sh", "codex", "test", "${input:taskDescription}"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Delegate: Research with Gemini",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/delegate.sh", "gemini", "research", "${input:taskDescription}"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Delegate: Analyze with Gemini",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/delegate.sh", "gemini", "analyze"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Usage Report",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/usage-report.sh"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint: ShellCheck",
+      "type": "shell",
+      "command": "shellcheck",
+      "args": ["scripts/*.sh", "install*.sh"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": ["$shellcheck"]
+    },
+    {
+      "label": "Test: Run BATS",
+      "type": "shell",
+      "command": "bats",
+      "args": ["tests/*.bats"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "featureName",
+      "description": "Feature name (e.g., user authentication)",
+      "type": "promptString"
+    },
+    {
+      "id": "taskDescription",
+      "description": "Task description",
+      "type": "promptString"
+    }
+  ]
+}

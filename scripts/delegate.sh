@@ -50,6 +50,7 @@ Usage:
 AI:
   codex     OpenAI Codex (requires ChatGPT Pro)
   gemini    Google Gemini CLI (free)
+  ollama    Local model via Ollama (free, offline)
 
 Commands:
 
@@ -63,6 +64,10 @@ Commands:
   analyze [path]        Large-scale code analysis
   research <topic>      Technical research
 
+  [Ollama]
+  generate <prompt>     Generate code with local model
+  review [path]         Review code locally
+
   [Common]
   exec "<prompt>"       Execute a custom prompt
 
@@ -71,6 +76,7 @@ Options:
   --yolo                Run without approval (Gemini)
   --background          Run in background
   --output <file>       Specify output file
+  --model <name>        Ollama model name (default: codellama)
   --force               Bypass sensitive file filter (not recommended)
 
 Examples:
@@ -78,6 +84,8 @@ Examples:
   $0 codex test auth --full-auto
   $0 gemini analyze src/
   $0 gemini research "JWT vs Session auth"
+  $0 ollama generate "Create a REST API"
+  $0 ollama review src/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EOF
@@ -387,6 +395,93 @@ ${topic}
     esac
 }
 
+# Run Ollama (local model)
+run_ollama() {
+    local command="$1"
+    local args="$2"
+    local model="${OLLAMA_MODEL:-codellama}"
+    local background="${BACKGROUND:-false}"
+
+    # Check Ollama is installed
+    if ! command -v ollama &> /dev/null; then
+        log_error "Ollama is not installed"
+        log_info "Install: https://ollama.ai/download"
+        exit 1
+    fi
+
+    # Check Ollama is running
+    if ! ollama list &> /dev/null; then
+        log_error "Ollama is not running"
+        log_info "Start with: ollama serve"
+        exit 1
+    fi
+
+    # Check model is available
+    if ! ollama list | grep -q "$model"; then
+        log_warn "Model '$model' not found locally. Pulling..."
+        ollama pull "$model"
+    fi
+
+    case "$command" in
+        generate)
+            log_info "Ollama ($model): generating code..."
+
+            local prompt="$args"
+            if [ "$background" = "true" ]; then
+                ollama run "$model" "$prompt" > "$OUTPUT_FILE" 2>&1 &
+                echo $! > "${TASK_DIR}/pid-${TASK_ID}.txt"
+                log_success "Running in background (PID: $!)"
+            else
+                ollama run "$model" "$prompt" 2>&1 | tee "$OUTPUT_FILE"
+            fi
+            ;;
+
+        review)
+            local path="${args:-.}"
+            log_info "Ollama ($model): reviewing code... (${path})"
+
+            local code_content=""
+            local file_list
+            file_list=$(find "$path" -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.py" -o -name "*.js" -o -name "*.jsx" \) 2>/dev/null | head -20)
+            while IFS= read -r f; do
+                [ -z "$f" ] && continue
+                code_content="${code_content}
+--- ${f} ---
+$(cat "$f" 2>/dev/null)"
+            done <<< "$file_list"
+            code_content=$(echo "$code_content" | head -c 100000)
+
+            local prompt="Review the following code for bugs, security issues, and improvements:
+
+${code_content}"
+            if [ "$background" = "true" ]; then
+                ollama run "$model" "$prompt" > "$OUTPUT_FILE" 2>&1 &
+                echo $! > "${TASK_DIR}/pid-${TASK_ID}.txt"
+                log_success "Running in background (PID: $!)"
+            else
+                ollama run "$model" "$prompt" 2>&1 | tee "$OUTPUT_FILE"
+            fi
+            ;;
+
+        exec)
+            log_info "Ollama ($model): running custom task..."
+            if [ "$background" = "true" ]; then
+                ollama run "$model" "$args" > "$OUTPUT_FILE" 2>&1 &
+                echo $! > "${TASK_DIR}/pid-${TASK_ID}.txt"
+                log_success "Running in background (PID: $!)"
+            else
+                ollama run "$model" "$args" 2>&1 | tee "$OUTPUT_FILE"
+            fi
+            ;;
+
+        *)
+            log_error "Unknown command: $command"
+            show_help
+            exit 1
+            ;;
+    esac
+}
+
 # Main
 main() {
     # Parse arguments
@@ -421,6 +516,10 @@ main() {
                 shift
                 OUTPUT_FILE="$1"
                 ;;
+            --model)
+                shift
+                OLLAMA_MODEL="$1"
+                ;;
             -*)
                 # Ignore unknown options
                 ;;
@@ -450,12 +549,15 @@ main() {
         gemini)
             run_gemini "$command" "$args"
             ;;
+        ollama|local)
+            run_ollama "$command" "$args"
+            ;;
         help|--help|-h)
             show_help
             ;;
         *)
             log_error "Unknown AI: $ai"
-            log_info "Available: codex, gemini"
+            log_info "Available: codex, gemini, ollama"
             show_help
             exit 1
             ;;

@@ -190,11 +190,48 @@ my-app/
 
 ---
 
+## 互換性
+
+### AI CLI対応
+
+| ツール | 最小バージョン | テスト済み | 必須 |
+|--------|:----------:|:--------:|:----:|
+| Claude Code | 1.0.0 | 2.0.0 | Yes |
+| Codex CLI | 0.1.0 | 1.0.0 | No |
+| Gemini CLI | 0.1.0 | 1.0.0 | No |
+| Ollama | 0.1.0 | — | No |
+
+### IDE・エージェント対応
+
+| ツール | 対応 | 備考 |
+|--------|:----:|------|
+| Claude Code | ネイティブ | スキル・Hooks・委譲フル対応 |
+| Codex CLI | ネイティブ | AGENTS.mdと委譲スクリプト |
+| [OpenCode](https://github.com/sst/opencode) | 互換 | AGENTS.mdと.claude/skills/を自動読み込み |
+| Cursor | 互換 | .cursor/rules/テンプレート同梱 |
+| VS Code | タスク | templates/vscode-tasks.json同梱 |
+
+> 詳細は [OpenCode互換性ドキュメント](./docs/OPENCODE_COMPATIBILITY.md) を参照
+
+### ローカルモデル対応
+
+[Ollama](https://ollama.ai)でオフライン開発も可能：
+
+```bash
+# ローカルモデルでコード生成
+bash scripts/delegate.sh ollama generate "REST APIを作成して"
+
+# ローカルモデルでコードレビュー
+bash scripts/delegate.sh ollama review src/ --model deepseek-coder
+```
+
+---
+
 ## 動作環境
 
 - macOS / Linux / WSL2
 - Node.js 18+
-- ChatGPT Pro（Codex CLI用、$200/月）
+- ChatGPT Pro（Codex CLI用、$200/月）— `--claude-only`モードなら不要
 - Gemini CLI（無料、調査タスク用、任意）
 
 ---
@@ -205,6 +242,8 @@ my-app/
 |------------|------|
 | [導入ガイド](./docs/GETTING_STARTED.md) | インストール・セットアップ |
 | [ハンズオン](./docs/HANDS_ON_TUTORIAL.md) | TODOアプリを作るチュートリアル |
+| [コスト比較](./docs/COST_COMPARISON.md) | 3AI vs 単一AIの詳細コスト分析 |
+| [OpenCode互換性](./docs/OPENCODE_COMPATIBILITY.md) | OpenCode CLIとの併用 |
 | [コマンド一覧](./docs/COMMANDS.md) | 全コマンドのリファレンス |
 | [ベンチマーク](./benchmarks/BENCHMARK_RESULTS.md) | 実測データ詳細 |
 

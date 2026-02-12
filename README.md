@@ -184,7 +184,7 @@ cd claude-codex-collab && claude
 | `/mockup-swift` | Claude | Native iOS/macOS mockups via SwiftUI Preview |
 | `/checkpointing` | Claude | Save & restore session state across sessions |
 
-All skills follow the [Agent Skills open standard](https://agentskills.io/specification) and work with Claude Code, Codex CLI, GitHub Copilot, and other compatible agents.
+All skills follow the [Agent Skills open standard](https://agentskills.io/specification) and work with Claude Code, Codex CLI, OpenCode, Cursor, and other compatible agents.
 
 ---
 
@@ -248,15 +248,42 @@ bash install-fullstack.sh my-app --full
 
 ---
 
-## AI CLI Compatibility
+## Compatibility
+
+### AI CLI Support
 
 | Tool | Min Version | Max Tested | Required |
 |------|:-----------:|:----------:|:--------:|
 | Claude Code | 1.0.0 | 2.0.0 | Yes |
 | Codex CLI | 0.1.0 | 1.0.0 | No |
 | Gemini CLI | 0.1.0 | 1.0.0 | No |
+| Ollama | 0.1.0 | — | No |
 
 Version compatibility is automatically checked during installation and delegation. See `.ai-versions.json` for details.
+
+### IDE & Agent Support
+
+| Tool | Support | Notes |
+|------|:-------:|-------|
+| Claude Code | Native | Full skills, hooks, and delegation |
+| Codex CLI | Native | Via AGENTS.md and delegation scripts |
+| [OpenCode](https://github.com/sst/opencode) | Compatible | Reads AGENTS.md and .claude/skills/ natively |
+| Cursor | Compatible | Via .cursor/rules/ templates |
+| VS Code | Tasks | Via templates/vscode-tasks.json |
+
+> See [OpenCode Compatibility](./docs/OPENCODE_COMPATIBILITY.md) for details.
+
+### Local Model Support
+
+Run the entire pipeline offline with [Ollama](https://ollama.ai):
+
+```bash
+# Code generation with local model
+bash scripts/delegate.sh ollama generate "Create a REST API"
+
+# Code review with local model
+bash scripts/delegate.sh ollama review src/ --model deepseek-coder
+```
 
 ---
 
@@ -276,6 +303,8 @@ Version compatibility is automatically checked during installation and delegatio
 | [Getting Started](./docs/GETTING_STARTED.md) | Installation & setup |
 | [Hands-on Tutorial](./docs/HANDS_ON_TUTORIAL.md) | Build a TODO app step by step |
 | [Existing Project Setup](./docs/EXISTING_PROJECT_SETUP.md) | Add to existing projects |
+| [Cost Comparison](./docs/COST_COMPARISON.md) | Detailed cost analysis: 3-AI vs single AI |
+| [OpenCode Compatibility](./docs/OPENCODE_COMPATIBILITY.md) | Using with OpenCode CLI |
 | [Command Reference](./docs/COMMANDS.md) | Complete command reference |
 | [Benchmarks](./benchmarks/BENCHMARK_RESULTS.md) | Detailed benchmark data |
 

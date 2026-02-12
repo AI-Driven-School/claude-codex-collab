@@ -1,0 +1,49 @@
+---
+description: AI delegation rules for 3-AI collaborative development
+globs:
+alwaysApply: true
+---
+
+# AI Delegation Rules
+
+This project uses 3-AI collaborative development (Claude + Codex + Gemini).
+
+## When to Delegate
+
+### Delegate to Codex (Implementation)
+- New file creation (3+ files)
+- Large refactoring (10+ files)
+- Test generation
+- Boilerplate code generation
+
+Command: `bash scripts/delegate.sh codex implement "<task>"`
+
+### Delegate to Gemini (Research)
+- Multi-source research
+- Technology comparisons
+- Trend analysis
+- Large codebase analysis (1M token context)
+
+Command: `bash scripts/delegate.sh gemini research "<query>"`
+
+### Keep in Claude (Design & Review)
+- Architecture decisions
+- Requirements writing
+- Code review
+- Small edits (< 5 lines)
+- Security-sensitive code
+
+## Design Documents
+
+Always check for existing design docs before implementing:
+- `docs/requirements/` - Requirements definitions
+- `docs/specs/` - UI specifications
+- `docs/api/` - API designs
+
+## Workflow
+
+1. Write requirements with Claude → `docs/requirements/`
+2. Design API with Claude → `docs/api/`
+3. Delegate implementation to Codex → `src/`
+4. Delegate tests to Codex → `tests/`
+5. Review with Claude → `docs/reviews/`
