@@ -25,6 +25,7 @@ Usage:
 Commands:
   init <dir>     Initialize a new project with 4-AI workflow
   run <feature>  Run the pipeline for a feature
+  batch <file>   Run parallel batch of Claude Code tasks
   update         Update an existing project to the latest template
   --help, -h     Show this help
   --version, -v  Show version
@@ -41,11 +42,19 @@ Options for run / "<feature>":
   --auto           Auto-approve all prompts
   --report         Generate quality report
 
+Options for batch:
+  --jobs N         Max parallel jobs (default: auto based on RAM)
+  --timeout S      Per-task timeout in seconds (default: 300)
+  --generate P     Generate tasks from prompt, then run
+  --dry-run        Show plan without executing
+
 Examples:
   npx aiki init my-app
   npx aiki "ECサイトのカート機能"
   npx aiki "auth" --demo
   npx aiki run "auth" --auto
+  npx aiki batch tasks.jsonl --jobs 8
+  npx aiki batch --generate "EC site pages" --jobs 4
   npx aiki update
 EOF
 }
@@ -119,6 +128,10 @@ case "${1:-}" in
     run)
         shift
         cmd_run "$@"
+        ;;
+    batch)
+        shift
+        exec bash "$SCRIPT_DIR/scripts/batch-runner.sh" "$@"
         ;;
     update)
         shift

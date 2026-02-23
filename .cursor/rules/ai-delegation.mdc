@@ -1,12 +1,12 @@
 ---
-description: AI delegation rules for 3-AI collaborative development
+description: AI delegation rules for 4-AI collaborative development
 globs:
 alwaysApply: true
 ---
 
 # AI Delegation Rules
 
-This project uses 3-AI collaborative development (Claude + Codex + Gemini).
+This project uses 4-AI collaborative development (Claude + Codex + Gemini).
 
 ## When to Delegate
 

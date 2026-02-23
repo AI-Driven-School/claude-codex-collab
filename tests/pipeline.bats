@@ -1494,3 +1494,53 @@ for line in lines:
     [ "$status" -eq 0 ]
     [[ "$output" == *"deploy"* ]]
 }
+
+# ══════════════════════════════════════════════════════════════════════
+# v6 TUI integration tests
+# ══════════════════════════════════════════════════════════════════════
+
+# ── TUI library loads in pipeline ────────────────────────────────
+
+@test "tui.sh: copied to test workspace and loadable" {
+    [ -f "$TEST_WORKSPACE/scripts/lib/tui.sh" ]
+    run bash -n "$TEST_WORKSPACE/scripts/lib/tui.sh"
+    [ "$status" -eq 0 ]
+}
+
+@test "pipeline-engine: TUI integration doesn't break dry-run" {
+    cd "$TEST_WORKSPACE"
+    run bash "$TEST_WORKSPACE/scripts/pipeline-engine.sh" "tui-test" --dry-run --auto
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"DRY-RUN"* ]]
+    [[ "$output" == *"SKIP"* ]]
+}
+
+@test "pipeline-engine: dry-run still shows Quality Score with TUI" {
+    cd "$TEST_WORKSPACE"
+    run bash "$TEST_WORKSPACE/scripts/pipeline-engine.sh" "tui-test" --dry-run --auto
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"Quality Score"* ]] || [[ "$output" == *"quality"* ]] || [[ "$output" == *"Score"* ]]
+}
+
+@test "pipeline-engine: dry-run with NO_TUI=true uses fallback" {
+    cd "$TEST_WORKSPACE"
+    run bash -c "NO_TUI=true bash '$TEST_WORKSPACE/scripts/pipeline-engine.sh' 'tui-test' --dry-run --auto"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"Pipeline Summary"* ]]
+    [[ "$output" == *"vs Devin"* ]]
+}
+
+@test "pipeline-engine: dry-run with --phases works with TUI" {
+    cd "$TEST_WORKSPACE"
+    run bash "$TEST_WORKSPACE/scripts/pipeline-engine.sh" "tui-test" --dry-run --auto --phases=implement,test
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"implement"* ]]
+    [[ "$output" == *"test"* ]]
+}
+
+@test "pipeline-engine: phase file cleaned up after TUI dry-run" {
+    cd "$TEST_WORKSPACE"
+    run bash "$TEST_WORKSPACE/scripts/pipeline-engine.sh" "tui-cleanup" --dry-run --auto
+    [ "$status" -eq 0 ]
+    [ ! -f "$TEST_WORKSPACE/.claude/.pipeline_phase" ]
+}

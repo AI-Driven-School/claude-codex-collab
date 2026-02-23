@@ -1,0 +1,5 @@
+{"id":"top-page","prompt":"Next.js App Router + Tailwind で ECサイトのトップページを作成。ヒーロー、カテゴリ一覧、おすすめ商品セクション。レスポンシブ対応。","model":"sonnet"}
+{"id":"product-list","prompt":"商品一覧ページ。カテゴリフィルター、価格ソート、ページネーション。モックデータ10件付き。","model":"sonnet"}
+{"id":"product-detail","prompt":"商品詳細ページ。画像ギャラリー、数量選択、カートに追加ボタン、レビュー表示。","model":"sonnet"}
+{"id":"cart","prompt":"カートページ。数量変更、削除、小計/合計計算。LocalStorage永続化。","model":"sonnet"}
+{"id":"checkout","prompt":"決済ページ。配送先入力フォーム、支払い方法選択、注文確認。バリデーション付き。","model":"sonnet"}

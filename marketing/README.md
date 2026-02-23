@@ -1,6 +1,6 @@
 # Marketing Materials
 
-This directory contains promotional content for claude-codex-collab. These files are **not tracked in git** to keep the repository focused on the tool itself.
+This directory contains promotional content for ai4dev. These files are **not tracked in git** to keep the repository focused on the tool itself.
 
 ## Files
 

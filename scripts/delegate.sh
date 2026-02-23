@@ -1,5 +1,5 @@
 #!/bin/bash
-# 3-AI Collaboration System - Main Delegation Script
+# 4-AI Collaboration System - Main Delegation Script
 # Delegates tasks from Claude Code to Codex / Gemini
 
 set -euo pipefail
@@ -19,8 +19,31 @@ if [ -f "$SCRIPT_DIR/lib/version-check.sh" ]; then
     # shellcheck source=lib/version-check.sh
     source "$SCRIPT_DIR/lib/version-check.sh"
 fi
+
+# Load knowledge loop
+if [ -f "$SCRIPT_DIR/lib/knowledge-loop.sh" ]; then
+    # shellcheck source=lib/knowledge-loop.sh
+    source "$SCRIPT_DIR/lib/knowledge-loop.sh"
+fi
 # shellcheck disable=SC2034
 TEMPLATE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Delegation timeout (seconds, default 600 = 10min)
+DELEGATE_TIMEOUT="${DELEGATE_TIMEOUT:-600}"
+
+# macOS-compatible timeout wrapper
+_run_with_timeout() {
+    local timeout_secs="$1"
+    shift
+    if command -v timeout &>/dev/null; then
+        timeout "$timeout_secs" "$@"
+    elif command -v gtimeout &>/dev/null; then
+        gtimeout "$timeout_secs" "$@"
+    else
+        # No timeout command available, run directly
+        "$@"
+    fi
+}
 
 # Color definitions
 RED='\033[0;31m'
@@ -41,7 +64,7 @@ log_error() { echo -e "${RED}[✗]${NC} $1"; }
 show_help() {
     cat << EOF
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  3AI Collaboration - Delegation Script
+  4AI Collaboration - Delegation Script
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Usage:
@@ -162,9 +185,18 @@ run_codex() {
             log_info "UI specs: ${spec_file:-none}"
             log_info "API specs: ${api_file:-none}"
 
+            # Use cached knowledge context if available, otherwise compute
+            local knowledge_ctx="${CACHED_KNOWLEDGE_CTX:-}"
+            if [ -z "$knowledge_ctx" ] && type get_knowledge_context &>/dev/null 2>&1; then
+                knowledge_ctx=$(get_knowledge_context "$PROJECT_DIR" 2>/dev/null || true)
+            fi
+
             local prompt
             prompt="
-以下の設計書を読み込み、実装してください。
+${knowledge_ctx:+【過去のレビュー知見・設計方針】
+${knowledge_ctx}
+
+}以下の設計書を読み込み、実装してください。
 
 【要件定義】
 $(safe_cat "$req_file" 2>/dev/null || echo "ファイルなし")
@@ -179,6 +211,7 @@ $(safe_cat "$api_file" 2>/dev/null || echo "ファイルなし")
 - 既存のコードスタイルに従う
 - TypeScript strict mode
 - エラーハンドリングを適切に行う
+- 過去のレビュー指摘事項を踏まえて実装する
 "
             if [ "$background" = "true" ]; then
                 codex exec $codex_flags -C "$PROJECT_DIR" "$prompt" > "$OUTPUT_FILE" 2>&1 &
@@ -186,7 +219,7 @@ $(safe_cat "$api_file" 2>/dev/null || echo "ファイルなし")
                 log_success "Running in background (PID: $!)"
                 log_info "Check output: tail -f $OUTPUT_FILE"
             else
-                codex exec $codex_flags -C "$PROJECT_DIR" "$prompt" 2>&1 | tee "$OUTPUT_FILE"
+                _run_with_timeout "$DELEGATE_TIMEOUT" codex exec $codex_flags -C "$PROJECT_DIR" "$prompt" 2>&1 | tee "$OUTPUT_FILE"
             fi
             ;;
 
@@ -194,9 +227,18 @@ $(safe_cat "$api_file" 2>/dev/null || echo "ファイルなし")
             local feature="$args"
             log_info "Codex: generating tests... (${feature})"
 
+            # Use cached knowledge context for tests
+            local test_knowledge_ctx="${CACHED_KNOWLEDGE_CTX:-}"
+            if [ -z "$test_knowledge_ctx" ] && type get_knowledge_context &>/dev/null 2>&1; then
+                test_knowledge_ctx=$(get_knowledge_context "$PROJECT_DIR" 2>/dev/null || true)
+            fi
+
             local prompt
             prompt="
-以下の受入条件を全てカバーするE2Eテストを生成してください。
+${test_knowledge_ctx:+【過去のレビュー知見】
+${test_knowledge_ctx}
+
+}以下の受入条件を全てカバーするE2Eテストを生成してください。
 
 【受入条件】
 $(cat "docs/requirements/${feature}.md" 2>/dev/null | grep -A 100 '## 受入条件' || echo "ファイルなし")
@@ -208,14 +250,14 @@ $(cat "docs/requirements/${feature}.md" 2>/dev/null | grep -A 100 '## 受入条�
 - 適切なセレクタ（data-testid推奨）
 - 日本語でテスト名を記述
 "
-            codex exec $codex_flags -C "$PROJECT_DIR" "$prompt" 2>&1 | tee "$OUTPUT_FILE"
+            _run_with_timeout "$DELEGATE_TIMEOUT" codex exec $codex_flags -C "$PROJECT_DIR" "$prompt" 2>&1 | tee "$OUTPUT_FILE"
             ;;
 
         refactor)
             local path="${args:-src/}"
             log_info "Codex: refactoring... (${path})"
 
-            codex exec $codex_flags -C "$PROJECT_DIR" \
+            _run_with_timeout "$DELEGATE_TIMEOUT" codex exec $codex_flags -C "$PROJECT_DIR" \
                 "${path}のコードを整理・リファクタリングしてください。機能は変更せず、可読性とメンテナンス性を向上させてください。" \
                 2>&1 | tee "$OUTPUT_FILE"
             ;;
@@ -339,7 +381,7 @@ $code_content
                 echo $! > "${TASK_DIR}/pid-${TASK_ID}.txt"
                 log_success "Running in background (PID: $!)"
             else
-                echo "$prompt" | gemini $gemini_flags 2>&1 | tee "$OUTPUT_FILE"
+                echo "$prompt" | _run_with_timeout "$DELEGATE_TIMEOUT" gemini $gemini_flags 2>&1 | tee "$OUTPUT_FILE"
             fi
             ;;
 
@@ -372,7 +414,7 @@ ${topic}
                 echo $! > "${TASK_DIR}/pid-${TASK_ID}.txt"
                 log_success "Running in background (PID: $!)"
             else
-                gemini $gemini_flags -p "$prompt" 2>&1 | tee "$OUTPUT_FILE"
+                _run_with_timeout "$DELEGATE_TIMEOUT" gemini $gemini_flags -p "$prompt" 2>&1 | tee "$OUTPUT_FILE"
             fi
             ;;
 
@@ -383,7 +425,7 @@ ${topic}
                 echo $! > "${TASK_DIR}/pid-${TASK_ID}.txt"
                 log_success "Running in background (PID: $!)"
             else
-                gemini $gemini_flags -p "$args" 2>&1 | tee "$OUTPUT_FILE"
+                _run_with_timeout "$DELEGATE_TIMEOUT" gemini $gemini_flags -p "$args" 2>&1 | tee "$OUTPUT_FILE"
             fi
             ;;
 
@@ -538,7 +580,7 @@ main() {
 
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "3AI Collaboration System"
+    echo "4AI Collaboration System"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
 

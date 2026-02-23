@@ -39,12 +39,14 @@ Thumbs.db
 
 # Claude Code local files
 .claude/.edit_counter
+.claude/.artifact-cache/
 .claude/checkpoints/
 
 # Task outputs
 .delegate-tasks/
 .codex-tasks/
 .project-state-*
+.batch-results/
 
 # Test workspaces
 benchmarks/workspace/

@@ -41,3 +41,23 @@ load helpers
     run bash -n "$PROJECT_ROOT/scripts/lib/sensitive-filter.sh"
     [ "$status" -eq 0 ]
 }
+
+@test "tui.sh: valid bash syntax" {
+    run bash -n "$PROJECT_ROOT/scripts/lib/tui.sh"
+    [ "$status" -eq 0 ]
+}
+
+@test "demo-mode.sh: valid bash syntax" {
+    run bash -n "$PROJECT_ROOT/scripts/demo-mode.sh"
+    [ "$status" -eq 0 ]
+}
+
+@test "cli.sh: valid bash syntax" {
+    run bash -n "$PROJECT_ROOT/bin/cli.sh"
+    [ "$status" -eq 0 ]
+}
+
+@test "simulate-demo.sh: valid bash syntax" {
+    run bash -n "$PROJECT_ROOT/landing/simulate-demo.sh"
+    [ "$status" -eq 0 ]
+}
