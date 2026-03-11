@@ -1,3 +1,9 @@
+---
+root: true
+targets: ["claudecode"]
+description: "Claude-specific workflow rules and enforcement"
+globs: ["**/*"]
+---
 # Claude Workflow Rules
 
 ## Rule Enforcement (MANDATORY — DO NOT IGNORE)

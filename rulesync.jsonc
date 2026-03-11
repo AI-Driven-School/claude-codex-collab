@@ -1,0 +1,23 @@
+{
+  "$schema": "https://github.com/dyoshikawa/rulesync/releases/latest/download/config-schema.json",
+  // aiki: 4-AI collaborative workflow (Claude + Codex + Gemini)
+  // Grok has no rulesync target yet - managed manually via .grok/GROK.md
+  "targets": [
+    "claudecode",
+    "codexcli",
+    "geminicli"
+  ],
+  "features": [
+    "rules"
+  ],
+  "baseDirs": [
+    "."
+  ],
+  "delete": false,
+  "verbose": false,
+  "silent": false,
+  "global": false,
+  "simulateCommands": false,
+  "simulateSubagents": false,
+  "simulateSkills": false
+}
