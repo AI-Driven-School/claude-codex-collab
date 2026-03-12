@@ -99,3 +99,54 @@ After a few months of use, the biggest win is not speed -- it is that every feat
 
 GitHub: https://github.com/AI-Driven-School/aiki
 Landing: https://ai-driven-school.github.io/aiki/
+
+---
+
+## Option 4: Cost Hook + Honest Limitations (Recommended Best)
+
+**Title:** Show HN: I stopped paying Claude for boilerplate — built a CLI that routes to Codex ($0) instead
+
+**Body:**
+
+I was paying Claude to write CRUD endpoints, test files, and component scaffolding. Then I realized: Codex does that for $0 with ChatGPT Pro. And Gemini handles research for free.
+
+So I built aiki, a CLI that routes each dev task to the AI that does it best — and cheapest.
+
+The split:
+
+- Claude: design docs, code review, architecture decisions (~$0.18/feature)
+- Codex: implementation, tests, boilerplate ($0 — included in ChatGPT Pro)
+- Gemini: large-scale analysis, tech research ($0 — free tier)
+- Grok: real-time trend checks from X (~$0.03/query)
+
+Total per feature: ~$0.21. Compare that to doing everything in Claude (~$1.00) or Devin ($500/mo).
+
+How it works:
+
+    npx aiki init my-app
+    cd my-app && claude
+    > /project user-auth
+
+This triggers an 8-phase pipeline: research (Gemini) → trend check (Grok) → requirements (Claude) → design (Claude) → implementation (Codex, $0) → testing (Codex, $0) → review (Claude) → deploy. You approve each handoff.
+
+The agents share context through the filesystem — specs in docs/, research in .claude/docs/research/, each agent has its own config. No proprietary protocol, just convention.
+
+Benchmarks (real measurements, not vibes):
+
+- Simple tasks (counter, auth API): Codex 10-20% faster than Claude, $0
+- Complex tasks (Discord integration on 15K LOC codebase): Claude 40% faster, 2x code output, higher quality
+- Large-scale analysis: Gemini handles 1M token context for free
+
+Full benchmark data: https://github.com/AI-Driven-School/aiki/blob/main/benchmarks/BENCHMARK_RESULTS_en.md
+
+Honest limitations:
+
+- Not autonomous. You are the router — the tool structures the routing
+- Requires accounts for each AI (Claude API, ChatGPT Pro, Gemini CLI)
+- Pipeline works best for greenfield features. Complex refactoring still needs human judgment
+- The "$0 implementation" requires ChatGPT Pro ($200/mo) — Codex is included, not free as in beer
+
+252 tests passing. MIT licensed.
+
+GitHub: https://github.com/AI-Driven-School/aiki
+Landing: https://ai-driven-school.github.io/aiki/

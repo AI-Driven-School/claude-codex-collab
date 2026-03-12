@@ -1,4 +1,4 @@
-# 2x Faster Implementation, 75% Cost Reduction
+# Stop Paying Claude to Write Boilerplate
 
 [![GitHub Stars](https://img.shields.io/github/stars/AI-Driven-School/aiki?style=for-the-badge&logo=github&label=Stars)](https://github.com/AI-Driven-School/aiki/stargazers)
 [![npm](https://img.shields.io/npm/v/aiki?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/aiki)
@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  Design with <strong>Claude</strong>, implement at speed with <strong>Codex</strong>, analyze at scale with <strong>Gemini</strong>, track trends with <strong>Grok</strong><br>
-  A 4-AI division of labor workflow that leaves design docs even for solo developers
+  Claude designs. Codex implements for <strong>$0</strong>. Gemini researches for <strong>free</strong>.<br>
+  A CLI that routes each task to the right AI — cutting costs by 75%.
 </p>
 
 <p align="center">
@@ -73,7 +73,7 @@ cd my-app && claude
 | Large-scale analysis | **Gemini** | 1M tokens, free |
 | Real-time trends | **Grok** | Live X data, xAI API |
 
-> [Detailed benchmark results](./benchmarks/BENCHMARK_RESULTS.md)
+> [Detailed benchmark results](./benchmarks/BENCHMARK_RESULTS_en.md)
 
 ---
 
@@ -310,7 +310,7 @@ bash scripts/delegate.sh ollama review src/ --model deepseek-coder
 | [Cost Comparison](./docs/COST_COMPARISON.md) | Detailed cost analysis: 4-AI vs single AI |
 | [OpenCode Compatibility](./docs/OPENCODE_COMPATIBILITY.md) | Using with OpenCode CLI |
 | [Command Reference](./docs/COMMANDS.md) | Complete command reference |
-| [Benchmarks](./benchmarks/BENCHMARK_RESULTS.md) | Detailed benchmark data |
+| [Benchmarks](./benchmarks/BENCHMARK_RESULTS_en.md) | Detailed benchmark data |
 
 ---
 

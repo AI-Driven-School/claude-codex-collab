@@ -94,6 +94,16 @@ codex_keywords="実装|implement|新規|create|追加|add|修正|fix|変更|chan
 gemini_keywords="調査|research|分析|analyze|比較|compare|ライブラリ|library|フレームワーク|framework|選定|ベストプラクティス|best practice|レビュー|review"
 grok_keywords="トレンド|trend|x検索|x search|sns|twitter|バズ|buzz|バイラル|viral|リアルタイム|realtime|real-time|最新|latest|話題|投稿ネタ|post ideas|世論|sentiment|反応|reaction"
 
+# ── Write routing context for enforce-delegation.sh ──────────────
+ROUTING_CTX="${PROJECT_DIR}/.claude/.routing_context"
+
+if echo "$input_lower" | grep -qiE "$codex_keywords"; then
+    echo "impl_detected=true" > "$ROUTING_CTX"
+    echo "detected_at=$(date +%s)" >> "$ROUTING_CTX"
+else
+    rm -f "$ROUTING_CTX"
+fi
+
 keyword_suggestions=""
 
 if echo "$input_lower" | grep -qiE "$codex_keywords"; then

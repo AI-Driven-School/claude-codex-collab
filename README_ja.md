@@ -1,4 +1,4 @@
-# 実装2倍速、コスト75%削減
+# Claudeにボイラープレートを書かせるのをやめよう
 
 [![GitHub Stars](https://img.shields.io/github/stars/AI-Driven-School/aiki?style=for-the-badge&logo=github&label=Stars)](https://github.com/AI-Driven-School/aiki/stargazers)
 [![npm](https://img.shields.io/npm/v/aiki?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/aiki)
@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <strong>Claude</strong> で設計、<strong>Codex</strong> で爆速実装、<strong>Gemini</strong> で大規模解析、<strong>Grok</strong> でトレンド把握<br>
-  一人開発でも設計書が残る、4AI分業の開発ワークフロー
+  Claudeが設計。Codexが<strong>$0</strong>で実装。Geminiが<strong>無料</strong>で調査。<br>
+  各タスクを最適なAIにルーティングするCLI — コスト75%削減。
 </p>
 
 <p align="center">
