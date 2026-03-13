@@ -91,7 +91,7 @@ Before ending a session:
 
 Latest important decisions (see `docs/decisions/` for details):
 
-- **2026-03-11**: Integrated rulesync for unified AI rule management
+- **2026-03-13**: Integrated rulesync for unified AI rule management
 - **2026-02-14**: Added Grok (xAI) as 4th AI - real-time trend & X search specialist
 - **2026-02-03**: Integrated Claude Code Orchestra (Hooks + Rules + Knowledge Base + Checkpointing)
 
@@ -99,11 +99,12 @@ Latest important decisions (see `docs/decisions/` for details):
 
 ## Work History
 
-### 2026-03-11
+### 2026-03-13
 - Integrated rulesync for unified AI rules management
-  - `.rulesync/rules/` - Shared & per-AI rules (single source of truth)
-  - `rulesync.jsonc` - Config for claudecode, codexcli, geminicli targets
+  - `.rulesync/rules/` - Single source of truth for all AI rules
   - `rulesync generate` auto-generates CLAUDE.md, AGENTS.md, GEMINI.md
+  - `rulesync install` for declarative skill management
+  - Added rulesync setup to install-fullstack.sh
 
 ### 2026-02-14
 - Added Grok (xAI API) integration as 4th AI

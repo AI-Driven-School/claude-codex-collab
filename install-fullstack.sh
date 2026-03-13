@@ -797,6 +797,22 @@ node_modules/
 EOF
 fi
 
+# ===== rulesync: unified AI rule management =====
+if [ -f "rulesync.jsonc" ]; then
+    echo ""
+    echo -e "${CYAN}Setting up rulesync (unified AI rules)...${NC}"
+    if command -v rulesync &> /dev/null; then
+        echo -e "  ${GREEN}✓${NC} rulesync found"
+        rulesync install --silent 2>/dev/null || true
+        rulesync generate --silent 2>/dev/null || true
+        echo -e "  ${GREEN}✓${NC} AI rules generated from .rulesync/rules/"
+    else
+        echo -e "  ${YELLOW}○${NC} rulesync not found (optional)"
+        echo -e "    Install: ${BLUE}npm install -g rulesync${NC}"
+        echo -e "    Then run: ${BLUE}rulesync install && rulesync generate${NC}"
+    fi
+fi
+
 # ===== Complete =====
 echo ""
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
