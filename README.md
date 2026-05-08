@@ -148,20 +148,26 @@ ROI: ~2min debate avoided shipping a wrong legal interpretation in client materi
 
 > [Read the full case study](./docs/examples/multi-agent-debate-case-study.md)
 
-### Stage 1 Benchmark (2026-05-08): 4-agent debate caught 6/6 false claims
+### Benchmark (2026-05-08): 4-agent debate at n=30 — Recall 100%, F1 87.8%
 
-Tested with Solver/Proposer/Critic/Checker pattern using 4 different model families:
+Tested with Solver / Proposer / Critic / Checker pattern using 4 different model families:
 
-| Approach | Catch Rate |
+| Approach | Recall (false catch) |
 |---|:-:|
-| Single AI review | 44–54% |
+| Single-AI review | 44–54% |
 | Greptile (commercial best) | 82% |
 | MARCH/CORE research target | 85–90% |
-| **This stack (n=6, all false claims)** | **100%** (6/6) |
+| **This stack — Stage 1 (n=6)** | **100%** (6/6) |
+| **This stack — Stage 2 (n=30)** | **100%** (18/18 false caught) / **F1 87.8%** |
 
-Caveats: n=6 is proof-of-concept only. Selection bias present. See [full report](./benchmarks/stage1-debate-catch-rate.md) for honest limitations and Stage 2 plan.
+Per-reviewer catch rate (Stage 2 false-claim subset, n=18):
+- Codex Critic alone (`-m gpt-5.5`, 88.7% SWE-Bench): **89%** (16/18) — strongest single reviewer
+- Gemini Proposer alone (3.x): 78% (14/18)
+- Combined via debate: **100%** (18/18)
 
-> Codex `-m gpt-5.5` (88.7% SWE-Bench) brought new primary sources Gemini missed — vendor-independent rebuttals are real, not theoretical.
+Caveats: n=30 still has ±5–10pp confidence interval. Selection bias and self-evaluation present. See [Stage 1 report](./benchmarks/stage1-debate-catch-rate.md) and [Stage 2 report](./benchmarks/stage2-debate-n30.md) for honest limitations and Stage 3 plan (n=100, independent grader, vs PR-Agent direct).
+
+> Codex `-m gpt-5.5` brought primary sources Gemini missed (PR TIMES, Meta Threads API spec, Vercel pricing). Vendor-independent rebuttals across Anthropic + Google + OpenAI + WebSearch are real, not theoretical.
 
 ---
 
