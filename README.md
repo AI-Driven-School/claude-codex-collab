@@ -165,7 +165,12 @@ Per-reviewer catch rate (Stage 2 false-claim subset, n=18):
 - Gemini Proposer alone (3.x): 78% (14/18)
 - Combined via debate: **100%** (18/18)
 
-Caveats: n=30 still has ±5–10pp confidence interval. Selection bias and self-evaluation present. See [Stage 1 report](./benchmarks/stage1-debate-catch-rate.md) and [Stage 2 report](./benchmarks/stage2-debate-n30.md) for honest limitations and Stage 3 plan (n=100, independent grader, vs PR-Agent direct).
+Caveats:
+- n=30 still has ±5–10pp confidence interval. Selection bias and self-evaluation present.
+- **Greptile/PR-Agent/Qodo numbers (82%, 44%, 60.1%) are for PR-diff bug catch — not directly comparable.** Our /debate evaluates natural-language claims (business judgment, legal interpretation, technical assertions). Different ground. We tried direct comparison with PR-Agent and confirmed it requires PR URLs as input — see [vs PR-Agent comparison](./benchmarks/stage2-vs-pr-agent-comparison.md).
+- Independent grader confirmed Recall 100% holds with κ=0.534 moderate agreement on verdict classifications — see [independent grading report](./benchmarks/stage2-independent-grading.md).
+
+Stage 3 plan (n=100, independent grader, **20 code-PR-format claims for direct PR-Agent comparison**).
 
 > Codex `-m gpt-5.5` brought primary sources Gemini missed (PR TIMES, Meta Threads API spec, Vercel pricing). Vendor-independent rebuttals across Anthropic + Google + OpenAI + WebSearch are real, not theoretical.
 
