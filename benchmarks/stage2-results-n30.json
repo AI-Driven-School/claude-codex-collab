@@ -1,0 +1,279 @@
+{
+  "results": [
+    {
+      "cid": "F1",
+      "truth": "false",
+      "gemini": "unclear",
+      "codex": "fatal",
+      "g_ok": false,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F10",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F11",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F12",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F13",
+      "truth": "false",
+      "gemini": "partial",
+      "codex": "unclear",
+      "g_ok": true,
+      "c_ok": false,
+      "final": true
+    },
+    {
+      "cid": "F14",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F15",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "unclear",
+      "g_ok": true,
+      "c_ok": false,
+      "final": true
+    },
+    {
+      "cid": "F16",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F17",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F18",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F2",
+      "truth": "false",
+      "gemini": "unclear",
+      "codex": "partial",
+      "g_ok": false,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F3",
+      "truth": "false",
+      "gemini": "unclear",
+      "codex": "partial",
+      "g_ok": false,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F4",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F5",
+      "truth": "false",
+      "gemini": "unclear",
+      "codex": "partial",
+      "g_ok": false,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F6",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F7",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F8",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "F9",
+      "truth": "false",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": true,
+      "c_ok": true,
+      "final": true
+    },
+    {
+      "cid": "G1",
+      "truth": "grey",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": null,
+      "c_ok": null,
+      "final": null
+    },
+    {
+      "cid": "G2",
+      "truth": "grey",
+      "gemini": "fatal",
+      "codex": "unclear",
+      "g_ok": null,
+      "c_ok": null,
+      "final": null
+    },
+    {
+      "cid": "G3",
+      "truth": "grey",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": null,
+      "c_ok": null,
+      "final": null
+    },
+    {
+      "cid": "G4",
+      "truth": "grey",
+      "gemini": "partial",
+      "codex": "partial",
+      "g_ok": null,
+      "c_ok": null,
+      "final": null
+    },
+    {
+      "cid": "G5",
+      "truth": "grey",
+      "gemini": "partial",
+      "codex": "unclear",
+      "g_ok": null,
+      "c_ok": null,
+      "final": null
+    },
+    {
+      "cid": "G6",
+      "truth": "grey",
+      "gemini": "fatal",
+      "codex": "unclear",
+      "g_ok": null,
+      "c_ok": null,
+      "final": null
+    },
+    {
+      "cid": "G7",
+      "truth": "grey",
+      "gemini": "fatal",
+      "codex": "partial",
+      "g_ok": null,
+      "c_ok": null,
+      "final": null
+    },
+    {
+      "cid": "T1",
+      "truth": "true",
+      "gemini": "partial",
+      "codex": "unclear",
+      "g_ok": false,
+      "c_ok": false,
+      "final": false
+    },
+    {
+      "cid": "T2",
+      "truth": "true",
+      "gemini": "partial",
+      "codex": "unclear",
+      "g_ok": false,
+      "c_ok": false,
+      "final": false
+    },
+    {
+      "cid": "T3",
+      "truth": "true",
+      "gemini": "fatal",
+      "codex": "unclear",
+      "g_ok": false,
+      "c_ok": false,
+      "final": false
+    },
+    {
+      "cid": "T4",
+      "truth": "true",
+      "gemini": "partial",
+      "codex": "unclear",
+      "g_ok": false,
+      "c_ok": false,
+      "final": false
+    },
+    {
+      "cid": "T5",
+      "truth": "true",
+      "gemini": "partial",
+      "codex": "sound",
+      "g_ok": false,
+      "c_ok": true,
+      "final": false
+    }
+  ],
+  "metrics": {
+    "recall": 1.0,
+    "precision": 0.782608695652174,
+    "f1": 0.878048780487805
+  }
+}
